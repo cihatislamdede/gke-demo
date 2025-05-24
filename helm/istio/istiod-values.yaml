@@ -1,0 +1,5 @@
+pilot:
+  autoscaleEnabled: true
+
+meshConfig:
+  accessLogFile: /dev/stdout

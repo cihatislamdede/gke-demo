@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: test-app-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: "<YOUR_TLS_SECRET_NAME>" # should be in the same namespace with istio (istio-system)
+      hosts:
+        - "<YOUR_DOMAIN>"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: test-app-vs
+spec:
+  hosts:
+    - "<YOUR_DOMAIN>"
+  gateways:
+    - test-app-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: test-app-service.default.svc.cluster.local
+            port:
+              number: 80
